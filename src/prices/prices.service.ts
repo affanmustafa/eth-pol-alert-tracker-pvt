@@ -292,7 +292,6 @@ export class PricesService {
   async checkPriceIncreaseEveryHour() {
     try {
       await this.checkPriceIncrease();
-      await this.checkPriceIncrease();
     } catch (error) {
       this.logger.error(
         `Error during hourly cron job execution: ${error.message}`,
