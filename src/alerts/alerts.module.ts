@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AlertsService } from './alerts.service';
-import { AlertsController } from './alerts.controller';
+import { AlertService } from './alerts.service';
+import { AlertController } from './alerts.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
+import { EmailService } from 'src/emails/emails.service';
 
 @Module({
-  providers: [AlertsService],
-  controllers: [AlertsController],
-  exports: [AlertsService],
+  providers: [AlertService, EmailService],
+  controllers: [AlertController],
+  exports: [AlertService],
   imports: [PrismaModule],
 })
-export class AlertsModule {}
+export class AlertModule {}

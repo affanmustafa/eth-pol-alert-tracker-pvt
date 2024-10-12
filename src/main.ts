@@ -7,11 +7,18 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn', 'log'],
   });
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
 
   const config = new DocumentBuilder()
-    .setTitle('Crypto Alert API')
-    .setDescription('API for creating and managing crypto alerts')
+    .setTitle('ETH and POL Price Alert API')
+    .setDescription(
+      'API for creating and managing ETH and POL price alerts. Submission by Affan Mustafa',
+    )
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

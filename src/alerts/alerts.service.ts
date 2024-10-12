@@ -3,16 +3,17 @@ import { PrismaService } from '../prisma/prisma.service';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CreateAlertDto, UpdateAlertDto } from './dtos';
-import { Alerts } from '@prisma/client';
+import { Alerts, Chain } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
+import { EmailService } from 'src/emails/emails.service';
 
 @Injectable()
-export class AlertsService {
-  private readonly logger = new Logger(AlertsService.name);
+export class AlertService {
+  private readonly logger = new Logger(AlertService.name);
 
   constructor(
     private prisma: PrismaService,
-    private mailerService: MailerService,
+    private emailService: EmailService,
   ) {}
 
   /**
@@ -152,10 +153,26 @@ export class AlertsService {
         const currentPrice = priceMap.get(alert.chain) || 0;
 
         if (new Decimal(currentPrice).gte(alert.dollar)) {
-          //   await this.sendAlertEmail(alert, currentPrice);
           this.logger.log(
             `Alert triggered for ${alert.chain} and price ${currentPrice}`,
           );
+          this.logger.log(`Sending email to ${alert.email}`);
+          await this.emailService.sendEmail(
+            alert.email,
+            `${alert.chain} Price Alert`,
+            'alert',
+            {
+              chain: alert.chain,
+              price: Number(currentPrice),
+              dollar: Number(alert.dollar),
+            },
+          );
+
+          // Deactivate the alert to prevent repeated notifications
+          await this.prisma.alerts.update({
+            where: { id: alert.id },
+            data: { isActive: false },
+          });
         }
       }
     } catch (error) {
@@ -163,38 +180,8 @@ export class AlertsService {
     }
   }
 
-  private async sendAlertEmail(alert: Alerts, currentPrice: number) {
-    try {
-      await this.mailerService.sendMail({
-        to: alert.email,
-        subject: `${alert.chain} Price Alert`,
-        template: 'alert', // Name of the template file without extension
-        context: {
-          chain: alert.chain,
-          price: currentPrice,
-          dollar: alert.dollar,
-        },
-      });
-
-      this.logger.log(
-        `Sent alert email to ${alert.email} for ${alert.chain} at $${currentPrice} USD.`,
-      );
-
-      // Deactivate the alert to prevent repeated notifications
-      await this.prisma.alerts.update({
-        where: { id: alert.id },
-        data: { isActive: false },
-      });
-    } catch (error) {
-      this.logger.error(
-        `Failed to send email to ${alert.email}:`,
-        error.message,
-      );
-    }
-  }
-
-  // Schedule alert checking every 5 minutes
-  @Cron(CronExpression.EVERY_MINUTE)
+  // Schedule alert checking every 10 minutes
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async handleCron() {
     this.logger.log('Running scheduled task: Check alerts');
     await this.checkAlerts();
