@@ -10,7 +10,7 @@ export class EmailService {
 
   constructor(
     private mailerService: MailerService,
-    private prisma: PrismaService, // Inject Prisma service
+    private prisma: PrismaService,
   ) {}
 
   async sendEmail(

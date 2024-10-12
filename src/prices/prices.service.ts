@@ -11,6 +11,7 @@ import {
 } from './interfaces/price.interface';
 import { EmailService } from 'src/emails/emails.service';
 import { EmailContext } from 'src/emails/interfaces/email.interface';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PricesService {
@@ -24,6 +25,7 @@ export class PricesService {
   constructor(
     private prisma: PrismaService,
     private emailService: EmailService,
+    private configService: ConfigService,
   ) {
     this.initializeMoralis();
   }
@@ -183,7 +185,7 @@ export class PricesService {
   }
 
   private async initializeMoralis() {
-    const apiKey = process.env.MORALIS_API_KEY;
+    const apiKey = this.configService.get<string>('MORALIS_API_KEY');
     await Moralis.start({
       apiKey,
     });

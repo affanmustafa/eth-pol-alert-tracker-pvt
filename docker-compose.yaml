@@ -1,4 +1,20 @@
+# version: '3.8'
+# services:
+#   nest-db:
+#     image: postgres:17
+#     ports:
+#       - 5434:5432
+#     environment:
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: 123
+#       POSTGRES_DB: nest
+#     networks:
+#       - nest-net
+# networks:
+#   nest-net:
+
 version: '3.8'
+
 services:
   nest-db:
     image: postgres:17
@@ -10,5 +26,17 @@ services:
       POSTGRES_DB: nest
     networks:
       - nest-net
+
+  nest-app:
+    build: .
+    ports:
+      - 3000:3000
+    env_file:
+      - .env # Reference the .env file
+    depends_on:
+      - nest-db
+    networks:
+      - nest-net
+
 networks:
   nest-net:
