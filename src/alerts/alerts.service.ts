@@ -1,18 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-// import { MailerService } from '@nestjs-modules/mailer';
+import { MailerService } from '@nestjs-modules/mailer';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CreateAlertDto, UpdateAlertDto } from './dtos';
 import { Alerts } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 
 @Injectable()
-export class AlertService {
-  private readonly logger = new Logger(AlertService.name);
+export class AlertsService {
+  private readonly logger = new Logger(AlertsService.name);
 
   constructor(
     private prisma: PrismaService,
-    // private mailerService: MailerService,
+    private mailerService: MailerService,
   ) {}
 
   /**
@@ -160,6 +160,36 @@ export class AlertService {
       }
     } catch (error) {
       this.logger.error('Error checking alerts:', error.message);
+    }
+  }
+
+  private async sendAlertEmail(alert: Alerts, currentPrice: number) {
+    try {
+      await this.mailerService.sendMail({
+        to: alert.email,
+        subject: `${alert.chain} Price Alert`,
+        template: 'alert', // Name of the template file without extension
+        context: {
+          chain: alert.chain,
+          price: currentPrice,
+          dollar: alert.dollar,
+        },
+      });
+
+      this.logger.log(
+        `Sent alert email to ${alert.email} for ${alert.chain} at $${currentPrice} USD.`,
+      );
+
+      // Deactivate the alert to prevent repeated notifications
+      await this.prisma.alerts.update({
+        where: { id: alert.id },
+        data: { isActive: false },
+      });
+    } catch (error) {
+      this.logger.error(
+        `Failed to send email to ${alert.email}:`,
+        error.message,
+      );
     }
   }
 

@@ -5,8 +5,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import Moralis from 'moralis';
 
 @Injectable()
-export class PriceService {
-  private readonly logger = new Logger(PriceService.name);
+export class PricesService {
+  private readonly logger = new Logger(PricesService.name);
 
   constructor(private prisma: PrismaService) {
     this.initializeMoralis();
@@ -20,26 +20,6 @@ export class PriceService {
       apiKey,
     });
   }
-
-  // Function to fetch the token price
-  // private async fetchAndSaveTokenPrice(address: string, chain: string) {
-  //   try {
-  //     const response = await Moralis.EvmApi.token.getTokenPrice({
-  //       address,
-  //       chain,
-  //     });
-
-  //     // this.logger.log(`${chain} price: ${response.result.usdPrice} USD`);
-  //     this.logger.log({
-  //       symbol: response.toJSON().tokenSymbol,
-  //       price: response.toJSON().usdPrice,
-  //     });
-  //   } catch (error) {
-  //     this.logger.error(
-  //       `Error fetching token price for ${chain}: ${error.message}`,
-  //     );
-  //   }
-  // }
 
   private async fetchAndSaveTokenPrice(token: {
     name: string;
@@ -69,7 +49,6 @@ export class PriceService {
           tokenSymbol: symbol,
           tokenDecimals: parseInt(data.tokenDecimals, 10),
           usdPrice: price,
-          // timestamp is auto-set to now()
         },
       });
 
