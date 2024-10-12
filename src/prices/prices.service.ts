@@ -268,6 +268,7 @@ export class PricesService {
    */
   @Cron(CronExpression.EVERY_5_MINUTES)
   async savePriceAfterFiveMinutes() {
+    this.logger.log('Running Cron job interval 5 minutes: Save price');
     try {
       const ethPriceData = await this.fetchTokenPrice({
         name: 'Ethereum',
@@ -292,6 +293,7 @@ export class PricesService {
    */
   @Cron(CronExpression.EVERY_HOUR)
   async checkPriceIncreaseEveryHour() {
+    this.logger.log('Running Cron job interval 1 hour: Check price increase');
     try {
       await this.checkPriceIncrease();
     } catch (error) {

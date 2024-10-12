@@ -183,7 +183,7 @@ export class AlertService {
   // Schedule alert checking every 10 minutes
   @Cron(CronExpression.EVERY_10_MINUTES)
   async handleCron() {
-    this.logger.log('Running scheduled task: Check alerts');
+    this.logger.log('Running Cron job interval 10 minutes: Check alerts');
     await this.checkAlerts();
   }
 }

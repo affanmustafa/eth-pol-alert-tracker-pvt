@@ -82,5 +82,5 @@ These are the CRON jobs that this project runs:
 - **Every 5 minutes**: Fetch the price of ETH and POLYGON and save it to the database.
 - **Every 10 minutes**: Check if any alerts have been triggered and send an email if they have.
 - **Every hour**: Fetch the price of ETH and POLYGON and check if the price has increased by more than 3% since the last check. If it has, send an email to the user.
-- **Weekly Price Cleanup**: Runs every Sunday at midnight and removes all price records that are more than a week old.
+- **Weekly Price Cleanup**: Runs after a week and removes all price records that are more than a week old.
   - **Implementation**: Located in `src/cron/price-cleanup.cron.ts`.

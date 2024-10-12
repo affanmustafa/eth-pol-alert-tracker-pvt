@@ -21,7 +21,8 @@
     "migrate": "prisma migrate deploy",
     "generate": "prisma generate",
     "migrate:generate": "prisma migrate deploy && prisma generate",
-    "start:migrate:prod": "npx prisma migrate deploy && npm run start:prod"
+    "start:migrate:prod": "npx prisma migrate deploy && npm run start:prod",
+    "start:migrate:dev": "npx prisma migrate deploy && npm run start:dev"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
