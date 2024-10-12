@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migrate": "prisma migrate deploy",
     "generate": "prisma generate",
-    "migrate:generate": "prisma migrate deploy && prisma generate"
+    "migrate:generate": "prisma migrate deploy && prisma generate",
+    "start:migrate:prod": "npx prisma migrate deploy && npm run start:prod"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",

@@ -266,7 +266,7 @@ export class PricesService {
   /**
    * Fetching price every 5 minutes. To change, just change the CronExpression
    */
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async savePriceAfterFiveMinutes() {
     try {
       const ethPriceData = await this.fetchTokenPrice({
@@ -290,7 +290,7 @@ export class PricesService {
   /**
    * A cron job that runs every hour to see whether the price has increased by more than 3%
    */
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_HOUR)
   async checkPriceIncreaseEveryHour() {
     try {
       await this.checkPriceIncrease();

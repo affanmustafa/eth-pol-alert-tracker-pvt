@@ -11,6 +11,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { EmailsModule } from './emails/emails.module';
 import { PricesController } from './prices/prices.controller';
+import { CronModule } from './cron/cron.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { PricesController } from './prices/prices.controller';
     PrismaModule,
     AlertModule,
     EmailsModule,
+    CronModule,
   ],
   controllers: [AppController, AlertController, PricesController],
   providers: [AppService],

@@ -1,0 +1,10 @@
+# Use official PostgreSQL image
+FROM postgres:17
+
+# Set environment variables used in prisma service
+ENV POSTGRES_DB=nest
+ENV POSTGRES_USER=postgresuser
+ENV POSTGRES_PASSWORD=123
+
+# Expose the PostgreSQL port
+EXPOSE 5432

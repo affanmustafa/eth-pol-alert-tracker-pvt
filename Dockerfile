@@ -1,5 +1,5 @@
 # Use the official Node.js image
-FROM node:20
+FROM node:20.11.1-alpine
 
 # Set the working directory
 WORKDIR /usr/src/app
@@ -7,20 +7,22 @@ WORKDIR /usr/src/app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
+
 # Install dependencies
+RUN npm cache clean --force
 RUN npm install
 
 # Copy the rest of the application files
 COPY . .
 
-# Run the migrations and generate the Prisma client
-RUN npm run migrate:generate
+# Copy the wait-for-postgres script
+# COPY wait-for-postgres.sh .
+# RUN chmod +x wait-for-postgres.sh
 
-# Build the application
-RUN npm run build
+# Generate the Prisma client
+RUN npx prisma generate
 
 # Expose the port your app runs on
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "run", "start:prod"]
+
